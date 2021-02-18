@@ -1,0 +1,22 @@
+{
+  "name": "snk-y-bot",
+  "version": "1.0.0",
+  "description": "a shoe bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kevinrufino/SNK-Y-Bot.git"
+  },
+  "author": "Kevin Rufino",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kevinrufino/SNK-Y-Bot/issues"
+  },
+  "homepage": "https://github.com/kevinrufino/SNK-Y-Bot#readme",
+  "dependencies": {
+    "puppeteer": "^7.1.0"
+  }
+}
