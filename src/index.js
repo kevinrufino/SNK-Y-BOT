@@ -1,16 +1,32 @@
-const puppeteer = require('puppeteer');
+// const puppeteer = require('puppeteer');
+var userAgent = require('user-agents');
+const puppeteer = require('puppeteer-extra');
 
-(async () => {
+// add stealth plugin and use defaults (all evasion techniques)
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+puppeteer.use(StealthPlugin());
+
+const go = async (atclink) => {
+
+    console.log(atclink);
 
     const browser = await puppeteer.launch({
         headless: true,
+        defaultViewport: null,
         args: [ '--disable-web-security', '--disable-features=IsolateOrigins,site-per-process']
     });
 
     const page = await browser.newPage();
+
+    // new user agent
+    await page.setUserAgent(userAgent.toString());
+
     // deadstock atc
-    await page.goto('https://deadstock.ca/cart/add?id=32986540933205');
+    // var link = "https://deadstock.ca/cart/add?id=32986540933205";
+
+    await page.goto(atclink);
     let checkOut = 'button.btn.cart__checkout.giftbox-checkout.giftbox-checkout-cloned';
+    await page.screenshot({path: 'cart-page.png'});
 
     // bodega atc
     let bodegaCheckOut = 'cart-form-checkout.button.primary';
@@ -50,13 +66,13 @@ const puppeteer = require('puppeteer');
     await page.$eval(firstName, el => el.value = 'Kev');
 
     await page.waitForSelector(lastName);
-    await page.$eval(lastName, el => el.value = 'Kev');
+    await page.$eval(lastName, el => el.value = 'Rufino');
 
     await page.waitForSelector(address1);
     await page.$eval(address1, el => el.value = '2125 Francis Ave SE');
 
     await page.waitForSelector(address2);
-    await page.$eval(address2, el => el.value = 'Kev');
+    await page.$eval(address2, el => el.value = '');
 
     await page.waitForSelector(city);
     await page.$eval(city, el => el.value = 'Grand Rapids');
@@ -71,6 +87,7 @@ const puppeteer = require('puppeteer');
     await page.waitForSelector(phone);
     await page.$eval(phone, el => el.value = '1234567890');
 
+    await page.screenshot({path: 'checkout.png'});
     console.log("Going to shipping page");
     
 
@@ -79,6 +96,7 @@ const puppeteer = require('puppeteer');
     await page.click(continueButton);
     //await page.waitForNavigation(); // is this necesary?
 
+    await page.screenshot({path: 'shipping.png'});
     console.log("Going to payment page");
 
     // shipping method page
@@ -97,30 +115,32 @@ const puppeteer = require('puppeteer');
     const numHandle = await page.$('.card-fields-iframe');
     const frame1 = await numHandle.contentFrame();
 
-    await frame1.type(cardNum, '12345689459612356');
+    await frame1.type(cardNum, '000000000000');
 
     const nameHandle = await page.$('[title="Field container for: Name on card"]');
     const frame2 = await nameHandle.contentFrame();
 
-    await frame2.type(cardName, "Bob Ross");
+    await frame2.type(cardName, "Kevin Rufino");
 
     const expHandle = await page.$('[title="Field container for: Expiration date (MM / YY)"]');
     const frame3 = await expHandle.contentFrame();
 
-    await frame3.type(expDate, '12/14');
+    await frame3.type(expDate, '00/00');
 
     const secHandle = await page.$('[title="Field container for: Security code"]');
     const frame4 = await secHandle.contentFrame();
 
-    await frame4.type(secCode, '123', { delay: 100 });
+    await frame4.type(secCode, '000', { delay: 100 });
 
     console.log("checking out!");
 
     //pay now
     await page.click(continueButton);
     await page.waitForNavigation(); // is this necesary?
-    await page.screenshot({path: 'we-did-it.png'});
+    await page.screenshot({path: 'we-tried-it.png'});
     await browser.close();
-})();
+};
+
+module.exports = go;
 
 

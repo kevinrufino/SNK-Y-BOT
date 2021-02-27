@@ -17,6 +17,9 @@
   },
   "homepage": "https://github.com/kevinrufino/SNK-Y-Bot#readme",
   "dependencies": {
-    "puppeteer": "^7.1.0"
+    "puppeteer": "^7.1.0",
+    "puppeteer-extra": "^3.1.17",
+    "puppeteer-extra-plugin-stealth": "^2.7.5",
+    "user-agents": "^1.0.566"
   }
 }
