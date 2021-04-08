@@ -12,7 +12,7 @@ const goBot = async (storeLink, atclink) => {
     console.log(atclink);
 
     const browser = await puppeteer.launch({
-        headless: true,
+        headless: false,
         defaultViewport: null,
         args: [ '--disable-web-security', '--disable-features=IsolateOrigins,site-per-process']
     });
@@ -65,10 +65,10 @@ const goBot = async (storeLink, atclink) => {
     const zip = '#checkout_shipping_address_zip.field__input';//'name="checkout[shipping_address][zip]"';
     const phone = '#checkout_shipping_address_phone.field__input.field__input--numeric';
 
-    await page.screenshot({path: './screenshots/checking-out-page.png'});
+    // await page.screenshot({path: './screenshots/checking-out-page.png'});
 
     await page.waitForSelector(email);
-    await page.$eval(email, el => el.value = 'kevinrufino97@gmail.com');
+    await page.$eval(email, el => el.value = 'shpegvsu@gmail.com');
 
     await page.waitForSelector(emailButton);
     await page.click(emailButton);
@@ -91,6 +91,10 @@ const goBot = async (storeLink, atclink) => {
     //country selector
 
     //province selector
+    await page.waitForSelector(province);
+    await page.select(province, 'Michigan');
+    // await page.$eval(province, el => el.value = 'Michigan');
+
 
     await page.waitForSelector(zip);
     await page.$eval(zip, el => el.value = '49507');
@@ -124,10 +128,15 @@ const goBot = async (storeLink, atclink) => {
 
     // switch to iframes
     // skip card info for sites with paypal (burnrubber)
-    const numHandle = await page.$('.card-fields-iframe');
+    // const numHandle = await page.$('[title="Field container for: Card number"]');
+    const numHandle = await page.waitForSelector('[title="Field container for: Card number"]');
     const frame1 = await numHandle.contentFrame();
 
-    await frame1.type(cardNum, '5491700009146689');
+    await frame1.waitForSelector(cardNum)
+    // const enterCardNum = await frame1.$(cardNum)
+    await frame1.type(cardNum, '5491700109146689');
+
+    // await frame1.type(cardNum, '5491700109146689');
 
     const nameHandle = await page.$('[title="Field container for: Name on card"]');
     const frame2 = await nameHandle.contentFrame();
@@ -150,8 +159,10 @@ const goBot = async (storeLink, atclink) => {
     await page.click(continueButton);
     // await page.waitForNavigation(); // is this necesary?
     await page.screenshot({path: './screenshots/we-tried-it.png'});
-    await browser.close();
+    // await browser.close();
 };
+
+// goBot('https://kith.com/', 'cart/add?id=39246106656896')
 
 module.exports = goBot;
 

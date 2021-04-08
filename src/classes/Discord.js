@@ -56,7 +56,7 @@ Discord.notifyProduct = async ({title, sellerUrl, image, url, variants, status})
             // launch snk-y-bot
             //x.size deadstock
             //x.title burnrubber
-            if (x.title == 11 && snkycounter <1) {
+            if (x.title == 11 && snkycounter <4) {
                 console.log("Entering snk-y if");
                 goBot('https://'+ sellerUrl, '/cart/add?id=' + x.id);
                 snkycounter++
@@ -85,13 +85,13 @@ Discord.notifyProduct = async ({title, sellerUrl, image, url, variants, status})
     }
 
     hooks.forEach(hook => {
-        // hook.send(embed);
+        hook.send(embed);
     })
 }
 
 Discord.info = async (title) => {
     hooks.forEach(hook => {
-        // hook.info(title);
+        hook.info(title);
     })  
 }
 

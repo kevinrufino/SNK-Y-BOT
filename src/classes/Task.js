@@ -115,9 +115,9 @@ class Task {
 
                                 if (found) {
                                     // This is supposed to be on to end it but it ends it before it can send the discord message
-                                    // if (found.lastUpdate === product.updated_at) {
-                                    //     return;
-                                    // }
+                                    if (found.lastUpdate === product.updated_at) {
+                                        return;
+                                    }
 
                                     var oldPr = new Product(found.id, found.sellerUrl, found.lastUpdate, found.handle, found.title, found.url, found.image, found.variants);
                                     // console.log("OLDPR:::", oldPr)
@@ -130,8 +130,8 @@ class Task {
                                     var imnotsure = oldPr.needToNotifyUpdate(newPr)
                                     // console.log("im not sure test", imnotsure)
 
-                                    if (!imnotsure) { //originally set to the opposite
-                                        // console.log("ALMOST THEREEEEE")
+                                    if (imnotsure) { //originally set to the opposite
+                                        console.log("ALMOST THEREEEEE")
                                         await Seller.updateOne({ _id: this.sellerId, "products.id": newPr.id }, { $set: { "products.$": newPr } });
                                         Discord.notifyProduct(newPr);
                                     }
