@@ -6,8 +6,9 @@ const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(StealthPlugin());
 
-const go = async (atclink) => {
+const goBot = async (storeLink, atclink) => {
 
+    console.log(storeLink);
     console.log(atclink);
 
     const browser = await puppeteer.launch({
@@ -22,11 +23,12 @@ const go = async (atclink) => {
     await page.setUserAgent(userAgent.toString());
 
     // deadstock atc
-    // var link = "https://deadstock.ca/cart/add?id=32986540933205";
+    var link = "https://deadstock.ca/cart/add?id=32986540933205";
+    // var link2 = "https://burnrubbersneakers.com/cart/add?id=39294482743342";
 
-    await page.goto(atclink);
+    await page.goto(storeLink+atclink);
     let checkOut = 'button.btn.cart__checkout.giftbox-checkout.giftbox-checkout-cloned';
-    await page.screenshot({path: 'cart-page.png'});
+    await page.screenshot({path: './screenshots/cart-page.png'});
 
     // bodega atc
     let bodegaCheckOut = 'cart-form-checkout.button.primary';
@@ -35,12 +37,19 @@ const go = async (atclink) => {
     let dsiCheckOut = '#update-cart.full-width';
 
     //burnrubber atc
-    let burnrubberCheckOut = '.btn';
+    let burnrubberCheckOut = '#your-shopping-cart > div.wrapper-container > main > form > div.cart-row > input';
 
-    await page.waitForSelector(checkOut);
-    await page.click(checkOut);
-    await page.waitForNavigation();
+    //burn rubber ad
+    // await page.waitForSelector('.btn.close');
+    // await page.click('.btn.close');
+    // await page.screenshot({path: './screenshots/closing-ad.png'});
 
+    //go to checkout link
+    await page.goto(storeLink + '/checkout');
+    // await page.waitForSelector(burnrubberCheckOut);
+    // await page.click(burnrubberCheckOut);
+    // await page.waitForNavigation();
+    await page.screenshot({path: './screenshots/checking-out.png'});
     console.log("Checking out");
 
     //checkout process
@@ -56,8 +65,10 @@ const go = async (atclink) => {
     const zip = '#checkout_shipping_address_zip.field__input';//'name="checkout[shipping_address][zip]"';
     const phone = '#checkout_shipping_address_phone.field__input.field__input--numeric';
 
+    await page.screenshot({path: './screenshots/checking-out-page.png'});
+
     await page.waitForSelector(email);
-    await page.$eval(email, el => el.value = 'fake@gmail.com');
+    await page.$eval(email, el => el.value = 'kevinrufino97@gmail.com');
 
     await page.waitForSelector(emailButton);
     await page.click(emailButton);
@@ -87,7 +98,7 @@ const go = async (atclink) => {
     await page.waitForSelector(phone);
     await page.$eval(phone, el => el.value = '1234567890');
 
-    await page.screenshot({path: 'checkout.png'});
+    await page.screenshot({path: './screenshots/checkout.png'});
     console.log("Going to shipping page");
     
 
@@ -96,13 +107,13 @@ const go = async (atclink) => {
     await page.click(continueButton);
     //await page.waitForNavigation(); // is this necesary?
 
-    await page.screenshot({path: 'shipping.png'});
+    await page.screenshot({path: './screenshots/shipping.png'});
     console.log("Going to payment page");
 
     // shipping method page
     await page.waitForSelector(continueButton);
     await page.click(continueButton);
-    await page.waitForNavigation(); // is this necesary?
+    // await page.waitForNavigation(); // is this necesary?
 
     //payment page
 
@@ -112,10 +123,11 @@ const go = async (atclink) => {
     const secCode = '#verification_value';
 
     // switch to iframes
+    // skip card info for sites with paypal (burnrubber)
     const numHandle = await page.$('.card-fields-iframe');
     const frame1 = await numHandle.contentFrame();
 
-    await frame1.type(cardNum, '000000000000');
+    await frame1.type(cardNum, '5491700009146689');
 
     const nameHandle = await page.$('[title="Field container for: Name on card"]');
     const frame2 = await nameHandle.contentFrame();
@@ -125,22 +137,22 @@ const go = async (atclink) => {
     const expHandle = await page.$('[title="Field container for: Expiration date (MM / YY)"]');
     const frame3 = await expHandle.contentFrame();
 
-    await frame3.type(expDate, '00/00');
+    await frame3.type(expDate, '06/23');
 
     const secHandle = await page.$('[title="Field container for: Security code"]');
     const frame4 = await secHandle.contentFrame();
 
-    await frame4.type(secCode, '000', { delay: 100 });
+    await frame4.type(secCode, '925', { delay: 100 });
 
     console.log("checking out!");
 
     //pay now
     await page.click(continueButton);
-    await page.waitForNavigation(); // is this necesary?
-    await page.screenshot({path: 'we-tried-it.png'});
+    // await page.waitForNavigation(); // is this necesary?
+    await page.screenshot({path: './screenshots/we-tried-it.png'});
     await browser.close();
 };
 
-module.exports = go;
+module.exports = goBot;
 
 
