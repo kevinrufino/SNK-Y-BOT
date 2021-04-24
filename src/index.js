@@ -80,7 +80,7 @@ const goBot = async (storeLink, atclink) => {
     await page.$eval(lastName, el => el.value = 'Rufino');
 
     await page.waitForSelector(address1);
-    await page.$eval(address1, el => el.value = '2125 Francis Ave SE');
+    await page.$eval(address1, el => el.value = '21 Francine Ave SE');
 
     await page.waitForSelector(address2);
     await page.$eval(address2, el => el.value = '');
@@ -134,14 +134,12 @@ const goBot = async (storeLink, atclink) => {
 
     await frame1.waitForSelector(cardNum)
     // const enterCardNum = await frame1.$(cardNum)
-    await frame1.type(cardNum, '5491700109146689');
-
-    // await frame1.type(cardNum, '5491700109146689');
+    await frame1.type(cardNum, '1234567890878374');
 
     const nameHandle = await page.$('[title="Field container for: Name on card"]');
     const frame2 = await nameHandle.contentFrame();
 
-    await frame2.type(cardName, "Kevin Rufino");
+    await frame2.type(cardName, "Sailor Kevin");
 
     const expHandle = await page.$('[title="Field container for: Expiration date (MM / YY)"]');
     const frame3 = await expHandle.contentFrame();
